@@ -1,80 +1,35 @@
-import React,{useEffect, useState} from 'react';
+import React,{useState} from 'react';
+import postList from './Components/postList';
+import Posts from './Posts';
+import AddPost from './Components/AddPost';
 import './App.css';
 function App() {
-  const postList = [
-    {
-      id:0,
-      text:"This is First Post",
-      likes:300
-    },
-    {
-      id:1,
-      text:"This is the Second Post",
-      likes:200
-    },
-    {
-      id:2,
-      text:"This is Third Post",
-      likes:500
-    }
-  ]
   const [posts,setPosts] = useState(postList)
-  const [singlePost,setsinglePost] = useState({})
-  const [newPost,setnewPost] = useState({
-    id:posts.length,
-    text:"",
-    likes:100
-  })
-  const [text,setText] = useState("")
-
-  const liked = (post)=>{
-    let p = posts[post]
-    p.likes++
-    setsinglePost(p)
-    updatePostList(post)
-  }
-  const updatePostList = (post)=>{
-    let newPost = [...posts]
-    console.log(newPost[post])
-    console.log(posts)
-    setPosts(newPost)
+  
+  const updatePost=(id,like)=>{
+    let post = posts[id]
+    post.likes = like + 1
+    let updpost = [...posts]
+    updpost[id] = post
+    setPosts(updpost)
+    // console.log(updpost)
+    // console.log(post)
   }
 
-  const addPostList = ()=>{
-    let t = text
-    newPost.text = t
-    console.log(newPost)
-    setnewPost(newPost)
-    let nP = [...posts,newPost]
-    console.log(nP)
-    setPosts(nP)
-    setnewPost({
-      id:nP.length,
-      text:"",
-      likes:0
-    })
-    
-  }
-  const textPost=(e)=>{
-    setText(e.target.value)  
+  const addPost=(text)=>{
+    setPosts([...posts,{id:posts.length,text:text,likes:0}])
   }
   return(
-    <div>{
-      posts.map((post,i)=>
-        <div key={i}>
-          <h3>{post.id+1}.{post.text}</h3>
-          <button onClick={()=>liked(post.id)}>{post.likes}</button>       
-        </div>
-      )
-    }
-    <hr></hr>
-      <div>
-        <label>Enter Text For The Post: </label>
-        <input placeholder='Enter the text for Post...' value={text} onChange={(e)=>textPost(e)}></input><br></br>
-        <button onClick={()=>addPostList()}>Add Post</button>
-      </div>    
-    </div>
-  ) 
+    <div>
+
+        {posts.map(({id,text,likes},index)=>
+            <Posts key={index} text={text} likes={likes} id ={id} updatePost={(id,like)=>updatePost(id,like)}/>
+        )}
+      
+       <AddPost addPost={text=>{addPost(text)}}/>
+     </div>
+  )
+   
  
 }
 
